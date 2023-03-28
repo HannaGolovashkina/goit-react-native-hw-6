@@ -1,28 +1,51 @@
 import { StyleSheet, Text, ImageBackground,
   View, TouchableOpacity, TextInput, KeyboardAvoidingView, 
-  Platform } from "react-native";
-import React, { useState } from "react";
+  Platform, TouchableWithoutFeedback, Keyboard } from "react-native";
+import React, { useState, useEffect } from "react";
 import { StatusBar  } from 'expo-status-bar';
 const backImage = require('../../Source/Photo_BG.png');
+import { useSelector } from "react-redux";
+import { selectIsAuth } from "../../Redux/auth/authSelectors";
+import { useDispatch } from "react-redux";
+import { fetchLoginUser, fetchCurrentUser } from "../../Redux/auth/authOperations";
+import { fetchGetAllPosts } from "../../Redux/posts/postsOperations";
 
 
 const LoginScreen = ({ navigation }) => {
 
-  const [mail, setMail] =useState('');
-  const [password, setPassword] =useState('');
+ //state
+ const [mail, setMail] =useState('');
+ const [password, setPassword] =useState('');  
+
+ //redux  
+ const dispatch = useDispatch();
+
+ useEffect(()=>{
+   dispatch(fetchCurrentUser()).then(result => {
+     result.type === "auth/fetchCurrentUser/fulfilled" && dispatch(fetchGetAllPosts());
+   });
+ },[dispatch]);
+
+ useSelector(selectIsAuth) && navigation.navigate('Home', { screen: 'PostsScreen' });
+ //redux//
 
   const handleMail =(text)=>{ setMail(text)};
   const handlePassword =(text)=>{ setPassword(text)};
+  
 
-  const register =()=> {
+ const register =()=> {
    if (!mail || !password) { alert("Enter all data pleace!!!"); return }
-   navigation.navigate('Home', { screen: 'PostsScreen' });
-  }
+   dispatch(fetchLoginUser({ mail, password }))
+   .then(result => {
+     result.type ==='auth/fetchLoginUser/fulfilled' && navigation.navigate('Home', { screen: 'PostsScreen' })
+     result.type !=='auth/fetchLoginUser/fulfilled' && alert('Incorrect login!!!')
+   }); 
+ }
 
-  const passwShow =()=> alert(`Your password is: ${password}`);
+ const passwShow =()=> alert(`Your password is: ${password}`);
 
   return (
-   
+   <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
      <View style={styles.maincontainer}>
        <ImageBackground source={backImage} style={styles.backImg}>
          <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={ styles.containerKeyB } >
@@ -51,7 +74,7 @@ const LoginScreen = ({ navigation }) => {
          </ImageBackground>
       <StatusBar style="auto" />  
     </View>
-
+    </TouchableWithoutFeedback>
   )
 };
 

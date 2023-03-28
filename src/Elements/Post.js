@@ -20,10 +20,9 @@ const Post = ({ img, text, msgs, location, gps }) =>{
        navigation.navigate('Map', { location });
     };
      
-
     return (
         <View style={ styles.container }>
-          <ImageBackground source={ img } style={ styles.postImg }></ImageBackground>
+          <ImageBackground source={{ uri: `${ img }`}} style={ styles.postImg }></ImageBackground>
           <Text style={ styles.posText } >{text}</Text>
           <View style={ styles.infoContainer }>
 
