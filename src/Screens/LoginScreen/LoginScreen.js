@@ -5,13 +5,19 @@ import React, { useState, useEffect } from "react";
 import { StatusBar  } from 'expo-status-bar';
 const backImage = require('../../Source/Photo_BG.png');
 import { useSelector } from "react-redux";
-import { selectIsAuth } from "../../Redux/auth/authSelectors";
+import { selectIsAuth, selectUser } from "../../Redux/auth/authSelectors";
 import { useDispatch } from "react-redux";
 import { fetchLoginUser, fetchCurrentUser } from "../../Redux/auth/authOperations";
 import { fetchGetAllPosts } from "../../Redux/posts/postsOperations";
 
 
 const LoginScreen = ({ navigation }) => {
+
+ const logedIn = useSelector(selectIsAuth);
+ 
+ if(logedIn) {
+   navigation.navigate('Home', { screen: 'PostsScreen' })
+ }
 
  //state
  const [mail, setMail] =useState('');
@@ -20,21 +26,8 @@ const LoginScreen = ({ navigation }) => {
  //redux  
  const dispatch = useDispatch();
 
- useEffect(()=>{
-   dispatch(fetchCurrentUser());
- },[dispatch]);
-
- // useEffect(()=>{
- //   dispatch(fetchCurrentUser()).then(result => {
- //     result.type === "auth/fetchCurrentUser/fulfilled" && dispatch(fetchGetAllPosts());
- //   });
- // },[dispatch]);
-
- // useSelector(selectIsAuth) && navigation.navigate('Home', { screen: 'PostsScreen' });
- //redux//
-
-  const handleMail =(text)=>{ setMail(text)};
-  const handlePassword =(text)=>{ setPassword(text)};
+ const handleMail =(text)=>{ setMail(text)};
+ const handlePassword =(text)=>{ setPassword(text)};
   
 
  const register =()=> {
@@ -64,11 +57,11 @@ const LoginScreen = ({ navigation }) => {
                  <Text style={ styles.passwShowText }>Show</Text>
                </TouchableOpacity>  
 
-               <TouchableOpacity style={ styles.registerButton } activeOpacity={0.5} onPress={register}>
+               <TouchableOpacity style={ styles.registerButton } activeOpacity={0.5} onPress={ () => { register() } }>
                  <Text style={ styles.registerButtonText }>Login</Text>
                </TouchableOpacity>
 
-               <TouchableOpacity style={ styles.loginLink } activeOpacity={0.5} onPress={() => navigation.navigate("Registratione")}>
+               <TouchableOpacity style={ styles.loginLink } activeOpacity={0.5} onPress={() => navigation.navigate("Registratione", {})}>
                  <Text style={ styles.loginLinkText }>Don't have an account? Register</Text>
                </TouchableOpacity> 
 

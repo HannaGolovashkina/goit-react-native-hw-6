@@ -19,7 +19,7 @@ const Post = ({ img, text, msgs, location, gps }) =>{
      const clickMap = () => {
        navigation.navigate('Map', { location });
     };
-     
+
     return (
         <View style={ styles.container }>
           <ImageBackground source={{ uri: `${ img }`}} style={ styles.postImg }></ImageBackground>
@@ -31,12 +31,19 @@ const Post = ({ img, text, msgs, location, gps }) =>{
               <Text>{ msgs }</Text>
             </TouchableOpacity>
 
+            <TouchableOpacity style={ styles.info } onPress={ () => navigation.navigate("Comments") }>
+              <Feather name="message-circle" size={18} color="gray" />
+              <Text>0</Text>
+            </TouchableOpacity>
+
             <TouchableOpacity style={ styles.info } onPress={ clickMap } >
               <EvilIcons name="location" size={24} color="gray" />
               <Text style={ styles.infolink }>{ location }</Text>
             </TouchableOpacity>
           </View>
         </View>
+
+        
     );
 };
 
