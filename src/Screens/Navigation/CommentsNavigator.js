@@ -1,3 +1,4 @@
+import React from "react";
 import { StyleSheet, TouchableOpacity, TextInput, View} from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { EvilIcons, Ionicons } from '@expo/vector-icons';
